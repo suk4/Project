@@ -18,7 +18,7 @@ Ontario, Canada
 `define FILE_NAME "motorcycle.ppm"
 //`define FILE_NAME "chip.ppm"
 
-module tb_experiment4b;
+module tb_experiment4a;
 
 logic Clock_50;
 logic [17:0] Switches;
@@ -56,13 +56,11 @@ integer validation_file;
 integer VGA_temp;
 logic [7:0] VGA_file_data;
 logic [9:0] expected_red, expected_green, expected_blue;
-logic [9:0] VGA_red_buf, VGA_green_buf, VGA_blue_buf;
-logic [10:0] average_red, average_green, average_blue;
 logic [9:0] VGA_row, VGA_col;
 logic VGA_en;
 
 // Instantiate the unit under test
-experiment4b uut (
+experiment4a uut (
 		.CLOCK_50_I(Clock_50),
 		.SWITCH_I(Switches),
 		.PUSH_BUTTON_I(Push_buttons),		
@@ -186,7 +184,7 @@ initial begin
 	
 	$write("Simulation started at %t\n\n", $realtime);
 	Clock_50 = 1'b0;
-	Switches = 18'd1;
+	Switches = 18'd0;
 	SRAM_resetn = 1'b1;
 	
 	// Apply master reset
@@ -216,7 +214,7 @@ initial begin
 	$fclose(validation_file);
 	$stop;
 end
-
+ 
 // This always block checks to see if the RGB data obtained from the design matches with the PPM file
 always @ (posedge Clock_50) begin
 	if (~VGA_Vsync) begin
@@ -240,34 +238,12 @@ always @ (posedge Clock_50) begin
 	 			 && (VGA_col >= VIEW_AREA_LEFT && VGA_col < VIEW_AREA_RIGHT)) begin
 	 			
 	 				// Get expected data from PPM file
-	 				if (VGA_col == VIEW_AREA_LEFT) begin
-	 					VGA_file_data = $fgetc(validation_file);
-						expected_red = {VGA_file_data & 8'hFF, 2'b00};
-						VGA_red_buf <= {VGA_file_data & 8'hFF, 2'b00};
-						
-						VGA_file_data = $fgetc(validation_file);
-						expected_green = {VGA_file_data & 8'hFF, 2'b00};
-	 					VGA_green_buf <= {VGA_file_data & 8'hFF, 2'b00};						
-	 					
-		 				VGA_file_data = $fgetc(validation_file);
-						expected_blue = {VGA_file_data & 8'hFF, 2'b00};
-	 					VGA_blue_buf <= {VGA_file_data & 8'hFF, 2'b00};
-	 				end else begin
-	 					VGA_file_data = $fgetc(validation_file);
-	 					average_red = {1'b0, VGA_red_buf} + {1'b0, VGA_file_data & 8'hFF, 2'b00};
-	 					VGA_red_buf <= {VGA_file_data & 8'hFF, 2'b00};
-						expected_red = average_red[10:1];
-						
-		 				VGA_file_data = $fgetc(validation_file);
-	 					average_green = {1'b0, VGA_green_buf} + {1'b0, VGA_file_data & 8'hFF, 2'b00};
-	 					VGA_green_buf <= {VGA_file_data & 8'hFF, 2'b00};
-						expected_green = average_green[10:1];
-
-		 				VGA_file_data = $fgetc(validation_file);
-	 					average_blue = {1'b0, VGA_blue_buf} + {1'b0, VGA_file_data & 8'hFF, 2'b00};
-	 					VGA_blue_buf <= {VGA_file_data & 8'hFF, 2'b00};
-						expected_blue = average_blue[10:1];
-					end
+	 				VGA_file_data = $fgetc(validation_file);
+					expected_red = {VGA_file_data & 8'hFF, 2'b00};
+	 				VGA_file_data = $fgetc(validation_file);
+					expected_green = {VGA_file_data & 8'hFF, 2'b00};
+	 				VGA_file_data = $fgetc(validation_file);
+					expected_blue = {VGA_file_data & 8'hFF, 2'b00};
 							
 					if (VGA_red != expected_red) begin
 						$write("Red   mismatch at pixel (%d, %d): expect=%x, got=%x\n", 

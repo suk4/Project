@@ -14,7 +14,7 @@ Ontario, Canada
 // This is the top module
 // It connects the UART, SRAM and VGA together.
 // It gives access to the SRAM for UART and VGA
-module experiment4b (
+module experiment4a (
 		/////// board clocks                      ////////////
 		input logic CLOCK_50_I,                   // 50 MHz clock
 
@@ -48,7 +48,6 @@ module experiment4b (
 		/////// UART                              ////////////
 		input logic UART_RX_I,                    // UART receive signal
 		output logic UART_TX_O                    // UART transmit signal
-
 );
 	
 logic resetn;
@@ -62,7 +61,6 @@ logic [3:0] PB_pushed;
 logic VGA_enable;
 logic [17:0] VGA_base_address;
 logic [17:0] VGA_SRAM_address;
-logic VGA_adjust;
 
 // For SRAM
 logic [17:0] SRAM_address;
@@ -102,7 +100,6 @@ VGA_SRAM_interface VGA_unit (
 	.Clock(CLOCK_50_I),
 	.Resetn(resetn),
 	.VGA_enable(VGA_enable),
-	.VGA_adjust(VGA_adjust),
    
 	// For accessing SRAM
 	.SRAM_base_address(VGA_base_address),
@@ -193,7 +190,7 @@ always @(posedge CLOCK_50_I or negedge resetn) begin
 		end
 		S_WAIT_UART_RX: begin
 			if ((UART_timer == 26'd49999999) && (UART_SRAM_address != 18'h00000)) begin
-				// Timeout on UART
+				// Timeout for 1 sec on UART for detecting if file transmission is finished
 				UART_rx_initialize <= 1'b1;
 				 				
 				VGA_enable <= 1'b1;
@@ -204,8 +201,6 @@ always @(posedge CLOCK_50_I or negedge resetn) begin
 		endcase
 	end
 end
-
-assign VGA_adjust = SWITCH_I[0];
 
 assign VGA_base_address = 18'd0;
 

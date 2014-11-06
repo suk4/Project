@@ -20,11 +20,11 @@ vlog -sv -svinputport=var -work rtl_work +define+SIMULATION UART_Receive_Control
 vlog -sv -svinputport=var -work rtl_work VGA_SRAM_interface.v
 vlog -sv -svinputport=var -work rtl_work UART_SRAM_interface.v
 vlog -sv -svinputport=var -work rtl_work Clock_100_PLL.v
-vlog -sv -svinputport=var -work rtl_work experiment4b.v
-vlog -sv -svinputport=var -work rtl_work tb_experiment4b.v
+vlog -sv -svinputport=var -work rtl_work experiment4a.v
+vlog -sv -svinputport=var -work rtl_work tb_experiment4a.v
 
 # specify library for simulation
-vsim -t 100ps -L altera_mf_ver -lib rtl_work tb_experiment4b
+vsim -t 100ps -L altera_mf_ver -lib rtl_work tb_experiment4a
 
 # Clear previous simulation
 restart -f
