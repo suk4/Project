@@ -19,6 +19,8 @@ module VGA_SRAM_interface (
    input  logic   [17:0]   SRAM_base_address,
    output logic   [17:0]   SRAM_address,
    input  logic   [15:0]   SRAM_read_data,
+   output logic   [15:0]   SRAM_write_data,
+   output logic    		   SRAM_write_en_n,
 
    output logic            VGA_CLOCK_O,
    output logic            VGA_HSYNC_O,
